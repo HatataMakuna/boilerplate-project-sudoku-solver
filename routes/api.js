@@ -44,11 +44,15 @@ module.exports = function (app) {
     const currentCellValue = puzzle[row * 9 + col];
     // If the value is already present, check for conflicts
     if (currentCellValue === value) {
+      let puzzleArr = puzzle.split('');
+      puzzleArr[row * 9 + col] = '.';
+      let puzzleWithoutCell = puzzleArr.join('');
+
       // Check for conflicts as if the cell was empty
       let conflicts = [];
-      if (!solver.checkRowPlacement(puzzle, row, col, value)) conflicts.push('row');
-      if (!solver.checkColPlacement(puzzle, row, col, value)) conflicts.push('column');
-      if (!solver.checkRegionPlacement(puzzle, row, col, value)) conflicts.push('region');
+      if (!solver.checkRowPlacement(puzzleWithoutCell, row, col, value)) conflicts.push('row');
+      if (!solver.checkColPlacement(puzzleWithoutCell, row, col, value)) conflicts.push('column');
+      if (!solver.checkRegionPlacement(puzzleWithoutCell, row, col, value)) conflicts.push('region');
       if (conflicts.length > 0) {
         return res.json({ valid: false, conflict: conflicts });
       }
